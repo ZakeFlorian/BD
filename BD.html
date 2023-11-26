@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Les BD</title>
+</head>
+
+<body class="bg-dark text-white">
+    <header>
+        <nav class="text-center bg-secondary">
+            <h1>BDWorld</h1>
+        </nav>
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-3">
+                <div class="input-group">
+                    <input type="text" id="filtreAuteurInput" class="form-control" placeholder="Filtrer par Auteur">
+                    <button id="filtrerParAuteurBtn">Filtrer</button>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-secondary">ou</p>
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-3">
+                <div class="input-group">
+                    <input type="text" id="filtreTitreInput" class="form-control" placeholder="Filtrer par BD">
+                    <button id="filtrerParTitreBtn">Filtrer</button>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-secondary">ou</p>
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-3">
+                <div class="input-group">
+                    <input type="text" id="filtreGenreInput" class="form-control" placeholder="Filtrer par Genre">
+                    <button id="filtrerParGenreBtn">Filtrer</button>
+                </div>
+            </div>
+        </div>
+
+    </header>
+    <div class="container">
+        <h1 class="text-center">Liste des BD</h1>
+    </div>
+    <div id="bdContainer" class="row mt-4"></div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <script src="data/albums.js"></script>
+    <script src="data/series.js"></script>
+    <script src="data/auteurs.js"></script>
+    <script>
+        var bdContainer = document.getElementById('bdContainer');
+
+albums.forEach(function (album, key) {
+    var card = document.createElement('div');
+    card.className = 'card';
+    card.setAttribute('data-id-auteur', album.idAuteur); // Ajoute l'attribut data-id-auteur à la carte
+
+    var title = document.createElement('h3');
+    title.textContent = album.titre;
+    card.appendChild(title);
+
+    var img = document.createElement('img');
+    var imgFileName = album.titre.replace(/\s+/g, '-') + '.jpg'; // Nom de fichier normalisé
+    img.src = 'albums/' + imgFileName.toLowerCase(); // Chemin de l'image
+    img.alt = album.titre; // Texte alternatif pour l'image
+    card.appendChild(img);
+
+    var detailsList = document.createElement('ul');
+    var details = ['Numéro: ' + album.numero, 'Prix: ' + album.prix, 'Auteur: ' + auteurs.get(album.idAuteur).nom];
+    details.forEach(function (detail) {
+        var listItem = document.createElement('li');
+        listItem.textContent = detail;
+        detailsList.appendChild(listItem);
+    });
+
+    card.appendChild(detailsList);
+    bdContainer.appendChild(card);
+});
+const removeAccents = str =>
+  str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+$(document).ready(function () {
+    $('#filtrerParAuteurBtn').click(function () {
+        var inputAuteur = $('#filtreAuteurInput').val().toLowerCase().trim().removeAccents;
+
+        $('#bdContainer .card').each(function () {
+            var nomAuteurCarte = auteurs.nom; // supposons que vous stockez le nom de l'auteur dans 'data-nom-auteur'
+            if (nomAuteurCarte == (inputAuteur)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+
+    $('#filtrerParTitreBtn').click(function () {
+        var inputTitre = $('#filtreTitreInput').val().toLowerCase().trim();
+
+        $('#bdContainer .card').each(function () {
+            var titreCarte = $(this).find('h3').text().toLowerCase();
+            if (titreCarte.includes(inputTitre)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+});
+
+
+
+    </script>
+</body>
+
+</html>
